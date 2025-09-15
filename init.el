@@ -79,14 +79,47 @@
   :bind (("M-o" . ace-window))
   )
 
+(use-package system-packages
+  :custom
+  (system-packages-use-sudo nil)
+  )
+
+(use-package symbol-overlay
+  :bind (("C-=" . symbol-overlay-put)
+	 ("C-+" . symbol-overlay-remove-all))
+  )
+
+(use-package copilot
+  :custom
+  (copilot-log-max nil)
+  (copilot-server-log-level 4)
+  )
+
+(use-package diff-hl
+  :hook ((after-init . global-diff-hl-mode)
+	 (after-init . diff-hl-flydiff-mode))
+  :custom
+  (vc-git-program (substitute-in-file-name "${SCOOP}/apps/git/current/mingw64/bin/git.exe"))
+  (vc-allow-async-revert t)
+  (vc-allow-async-diff t)
+  (vc-async-checkin t)
+  (vc-display-status nil) ; used by `vc-mode-line'
+  
+  (diff-hl-update-async t)
+  )
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("5c7720c63b729140ed88cf35413f36c728ab7c70f8cd8422d9ee1cedeb618de5"
+     default))
  '(package-selected-packages
-   '(ace-window company copilot copilot-chat doom-modeline doom-themes
-		helm helm-descbinds undo-fu)))
+   '(ace-window casual-symbol-overlay company copilot copilot-chat
+		diff-hl doom-modeline doom-themes helm helm-descbinds
+		pdf-tools symbol-overlay system-packages undo-fu)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
