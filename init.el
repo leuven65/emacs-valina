@@ -11,6 +11,13 @@
 (setq use-short-answers t)
 (setq fill-column 120)
 
+(setopt scroll-conservatively 101)
+(setopt scroll-preserve-screen-position t)
+;; (setopt scroll-margin 3)
+
+(setopt register-use-preview 'insist)
+
+
 (keymap-global-set "C-x C-k"
 		   (lambda ()
 		     (interactive)
@@ -21,6 +28,11 @@
 (electric-pair-mode +1)
 (global-display-line-numbers-mode +1)
 ;; (global-display-fill-column-indicator-mode +1)
+(pixel-scroll-precision-mode)
+(repeat-mode)
+
+(add-hook 'help-fns-describe-function-functions
+          #'shortdoc-help-fns-examples-function)
 
 (setq package-archives
       '(("elpa" . "https://elpa.gnu.org/packages/")
@@ -48,8 +60,14 @@
   (helm-move-to-line-cycle-in-source nil)
   (helm-follow-input-idle-delay 0)
   (helm-x-icons-provider 'nerd-icons)
+
   (helm-buffers-show-icons t)
   (helm-bookmark-use-icon t)
+
+  (helm-apropos-show-short-doc t)
+
+  (helm-grep-input-idle-delay 0.5)
+  
   :config
   (helm-ff-icon-mode +1)
   )
@@ -90,22 +108,36 @@
   )
 
 (use-package copilot
+  :hook (prog-mode . copilot-mode)
+  :bind (:map copilot-completion-map
+	      ("<tab>" . 'copilot-accept-completion))
   :custom
-  (copilot-log-max nil)
-  (copilot-server-log-level 4)
+  (copilot-indent-offset-warning-disable t)
+  ;; (copilot-log-max nil)
+  ;; (copilot-server-log-level 4)
   )
 
-(use-package diff-hl
-  :hook ((after-init . global-diff-hl-mode)
-	 (after-init . diff-hl-flydiff-mode))
+(use-package vc
   :custom
   (vc-git-program (substitute-in-file-name "${SCOOP}/apps/git/current/mingw64/bin/git.exe"))
   (vc-allow-async-revert t)
   (vc-allow-async-diff t)
   (vc-async-checkin t)
   (vc-display-status nil) ; used by `vc-mode-line'
-  
+  :config
+  (remove-hook 'find-file-hook #'vc-refresh-state)
+  )
+
+(use-package diff-hl
+  :hook ((after-init . global-diff-hl-mode)
+	 (after-init . diff-hl-flydiff-mode))
+  :custom
   (diff-hl-update-async t)
+  (diff-hl-show-staged-changes nil)
+  (diff-hl-highlight-reference-function nil)
+  :config
+  ;; (define-advice diff-hl-update (:before-while (&rest _) my-advice)
+  ;;   (get-buffer-window (current-buffer) t))
   )
 
 (custom-set-variables
@@ -117,13 +149,19 @@
    '("5c7720c63b729140ed88cf35413f36c728ab7c70f8cd8422d9ee1cedeb618de5"
      default))
  '(package-selected-packages
-   '(ace-window casual-symbol-overlay company copilot copilot-chat
-		diff-hl doom-modeline doom-themes helm helm-descbinds
-		pdf-tools symbol-overlay system-packages undo-fu)))
+   '(ace-window aggressive-indent casual-symbol-overlay company copilot
+		copilot-chat diff-hl doom-modeline doom-themes helm
+		helm-descbinds pdf-tools rainbow-mode ruff-format
+		symbol-overlay system-packages undo-fu wgrep
+		wgrep-helm)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Cascadia Code SemiLight" :foundry "outline" :slant normal :weight light :height 113 :width normal)))))
+ '(default ((t (:family "Cascadia Code SemiLight" :foundry "outline" :slant normal :weight light :height 113 :width normal))))
+ '(wgrep-delete-face ((t (:background "#282a36" :foreground "#ff5555" :bold t))))
+ '(wgrep-done-face ((t (:background "#282a36" :foreground "#50fa7b"))))
+ '(wgrep-error-face ((t (:background "#282a36" :foreground "#ff5555" :underline t))))
+ '(wgrep-face ((t (:background "#44475a" :foreground "#f8f8f2")))))
