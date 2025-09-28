@@ -146,8 +146,20 @@
 	    :rev :newest)
   :bind (:map vterm-mode-map
 	 ( "C-q" . vterm-send-next-key))
-  ;; :custom
+  :custom
   ;; (vterm-decode-coding-system locale-coding-system)
+  (vterm-kill-buffer-on-exit t)
+  :config
+  (defun my-vterm-git-bash ()
+    (interactive)
+    (let ((vterm-shell "c:/Users/User/scoop/apps/git/current/usr/bin/bash.exe")
+	  (vterm-environment '("VTERM_CONTEXT=GIT_BASH"))
+	  (vterm-buffer-name "*vterm-git-bash*")
+	  )
+      (vterm--internal #'pop-to-buffer-same-window t)
+      (setq-local kill-buffer-query-functions nil)
+      )
+    )
   )
 
 (custom-set-variables
