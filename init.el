@@ -140,6 +140,14 @@
   ;;   (get-buffer-window (current-buffer) t))
   )
 
+(use-package vterm
+  :vc (:url "https://github.com/xhcoding/emacs-libvterm.git"
+	    :branch "master"
+	    :rev latest)
+  ;; :custom
+  ;; (vterm-decode-coding-system locale-coding-system)
+  )
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -152,8 +160,11 @@
    '(ace-window aggressive-indent casual-symbol-overlay company copilot
 		copilot-chat diff-hl doom-modeline doom-themes helm
 		helm-descbinds pdf-tools rainbow-mode ruff-format
-		symbol-overlay system-packages undo-fu wgrep
-		wgrep-helm)))
+		symbol-overlay system-packages undo-fu vterm wgrep
+		wgrep-helm))
+ '(package-vc-selected-packages
+   '((vterm :url "https://github.com/xhcoding/emacs-libvterm.git" :branch
+	    "master"))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
