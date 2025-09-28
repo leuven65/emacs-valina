@@ -143,7 +143,9 @@
 (use-package vterm
   :vc (:url "https://github.com/xhcoding/emacs-libvterm.git"
 	    :branch "master"
-	    :rev latest)
+	    :rev :newest)
+  :bind (:map vterm-mode-map
+	 ( "C-q" . vterm-send-next-key))
   ;; :custom
   ;; (vterm-decode-coding-system locale-coding-system)
   )
