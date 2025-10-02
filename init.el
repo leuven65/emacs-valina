@@ -134,7 +134,7 @@
 
 (use-package diff-hl
   :vc (:url "https://github.com/leuven65/diff-hl.git"
-	    :branch "test-aio"
+	    :branch "master"
 	    :rev :newest)
   :hook ((after-init . global-diff-hl-mode)
 	 (after-init . diff-hl-flydiff-mode))
@@ -170,6 +170,10 @@
     )
   ;; (split-string-shell-command (format "conhost.exe --headless --width %s --height %s -- %s" width height (vterm--get-shell)))
   )
+
+;; (use-package reader
+;;   :vc t
+;;   :load-path "~/workdir/emacs-reader")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
