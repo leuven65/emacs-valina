@@ -115,6 +115,10 @@
   (copilot-indent-offset-warning-disable t)
   ;; (copilot-log-max nil)
   ;; (copilot-server-log-level 4)
+  (copilot-server-executable
+   (car (directory-files-recursively
+	 (substitute-env-in-file-name "${SCOOP}/apps/msys2/current/ucrt64/bin/node_modules/@github/copilot-language-server")
+	 "copilot-language-server.exe")))
   )
 
 (use-package vc
@@ -129,6 +133,9 @@
   )
 
 (use-package diff-hl
+  :vc (:url "https://github.com/leuven65/diff-hl.git"
+	    :branch "test-aio"
+	    :rev :newest)
   :hook ((after-init . global-diff-hl-mode)
 	 (after-init . diff-hl-flydiff-mode))
   :custom
@@ -149,6 +156,7 @@
   :custom
   ;; (vterm-decode-coding-system locale-coding-system)
   (vterm-kill-buffer-on-exit t)
+  :commands (my-vterm-git-bash)
   :config
   (defun my-vterm-git-bash ()
     (interactive)
@@ -160,6 +168,7 @@
       (setq-local kill-buffer-query-functions nil)
       )
     )
+  ;; (split-string-shell-command (format "conhost.exe --headless --width %s --height %s -- %s" width height (vterm--get-shell)))
   )
 
 (custom-set-variables
@@ -170,15 +179,12 @@
  '(custom-safe-themes
    '("5c7720c63b729140ed88cf35413f36c728ab7c70f8cd8422d9ee1cedeb618de5"
      default))
- '(package-selected-packages
-   '(ace-window aggressive-indent casual-symbol-overlay company copilot
-		copilot-chat diff-hl doom-modeline doom-themes helm
-		helm-descbinds pdf-tools rainbow-mode ruff-format
-		symbol-overlay system-packages undo-fu vterm wgrep
-		wgrep-helm))
+ '(package-selected-packages nil)
  '(package-vc-selected-packages
-   '((vterm :url "https://github.com/xhcoding/emacs-libvterm.git" :branch
-	    "master"))))
+   '((diff-hl :url "https://github.com/leuven65/diff-hl.git" :branch
+	      "test-on-callback-instead-of-thread")
+     (vterm :url "https://github.com/xhcoding/emacs-libvterm.git"
+	    :branch "master"))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
