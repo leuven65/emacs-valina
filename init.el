@@ -10,6 +10,7 @@
 (setq ring-bell-function 'ignore)
 (setq use-short-answers t)
 (setq fill-column 120)
+(setq scroll-step 1)
 
 (setopt scroll-conservatively 101)
 (setopt scroll-preserve-screen-position t)
@@ -39,6 +40,8 @@
         ("elpa-devel" . "https://elpa.gnu.org/devel/")
         ("nongnu" . "https://elpa.nongnu.org/nongnu/")
         ("melpa" . "https://melpa.org/packages/")))
+
+(setopt use-package-always-defer t)
 
 (use-package doom-themes
   )
@@ -171,9 +174,29 @@
   ;; (split-string-shell-command (format "conhost.exe --headless --width %s --height %s -- %s" width height (vterm--get-shell)))
   )
 
-;; (use-package reader
-;;   :vc t
-;;   :load-path "~/workdir/emacs-reader")
+(use-package gt
+  :defer   :custom
+  (gt-tts-speaker "mpg123")
+  :hook (gt-buffer-render-init . my-gt-buffer-render-setup)
+  :config
+  ;; (setopt gt-http-backend (pdd-curl-backend))
+
+  (setq gt-langs '(zh en nl))
+  (setq gt-default-translator
+	(gt-translator
+	 :taker   (gt-taker :text 'word :pick nil :prompt t)
+	 :engines (list
+		   ;; (gt-google-engine :parse (gt-google-summary-parser))
+		   (gt-google-engine :parse (gt-google-parser))
+		   (gt-bing-engine))
+	 :render  (gt-buffer-render)))
+
+  (defun my-gt-buffer-render-setup ()
+    (visual-line-mode 1)
+    (visual-wrap-prefix-mode 1)
+    (setq-local cursor-type 'box)
+    )
+  )
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -183,7 +206,11 @@
  '(custom-safe-themes
    '("5c7720c63b729140ed88cf35413f36c728ab7c70f8cd8422d9ee1cedeb618de5"
      default))
- '(package-selected-packages nil)
+ '(package-selected-packages
+   '(ace-window aggressive-indent casual-symbol-overlay company copilot
+		copilot-chat diff-hl doom-modeline doom-themes gt
+		helm-descbinds pdf-tools rainbow-mode reader
+		ruff-format system-packages undo-fu vterm wgrep-helm))
  '(package-vc-selected-packages
    '((diff-hl :url "https://github.com/leuven65/diff-hl.git" :branch
 	      "test-on-callback-instead-of-thread")
