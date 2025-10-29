@@ -124,6 +124,28 @@
 	 "copilot-language-server.exe")))
   )
 
+(use-package copilot-chat
+  :bind (:map copilot-chat-prompt-mode-map
+	      ("M-p" . my/copilot-chat-select-prompt)
+	      :map polymode-minor-mode-map
+	      ("M-n" . nil)
+	      )
+  :config
+  (defun my/copilot-chat-select-prompt ()
+    "Select a prompt from the current Copilot chat history."
+    (interactive)
+    (when-let* ((instance (copilot-chat--current-instance))
+		(prompt (completing-read "Select PROMPT: "
+					 (seq-map
+					  (lambda (msg)
+					    (plist-get msg :content))
+					  (seq-filter
+					   (lambda (msg)
+					     (equal (plist-get msg :role) "user"))
+					   (copilot-chat-history instance))))))
+      (copilot-chat--insert-prompt instance prompt)))
+  )
+
 (use-package vc
   :custom
   (vc-git-program (substitute-in-file-name "${SCOOP}/apps/git/current/mingw64/bin/git.exe"))
@@ -145,6 +167,7 @@
   (diff-hl-update-async t)
   (diff-hl-show-staged-changes nil)
   (diff-hl-highlight-reference-function nil)
+  (diff-hl-show-hunk-function 'diff-hl-show-hunk-inline-popup)
   :config
   ;; (define-advice diff-hl-update (:before-while (&rest _) my-advice)
   ;;   (get-buffer-window (current-buffer) t))
@@ -198,32 +221,3 @@
     )
   )
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("5c7720c63b729140ed88cf35413f36c728ab7c70f8cd8422d9ee1cedeb618de5"
-     default))
- '(package-selected-packages
-   '(ace-window aggressive-indent casual-symbol-overlay company copilot
-		copilot-chat diff-hl doom-modeline doom-themes gt
-		helm-descbinds pdf-tools rainbow-mode reader
-		ruff-format system-packages undo-fu vterm wgrep-helm))
- '(package-vc-selected-packages
-   '((diff-hl :url "https://github.com/leuven65/diff-hl.git" :branch
-	      "test-on-callback-instead-of-thread")
-     (vterm :url "https://github.com/xhcoding/emacs-libvterm.git"
-	    :branch "master"))))
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:family "Cascadia Code SemiLight" :foundry "outline" :slant normal :weight light :height 113 :width normal))))
- '(wgrep-delete-face ((t (:background "#282a36" :foreground "#ff5555" :bold t))))
- '(wgrep-done-face ((t (:background "#282a36" :foreground "#50fa7b"))))
- '(wgrep-error-face ((t (:background "#282a36" :foreground "#ff5555" :underline t))))
- '(wgrep-face ((t (:background "#44475a" :foreground "#f8f8f2")))))
